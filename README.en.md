@@ -101,6 +101,8 @@ Add me on WeChat to talk about the full anti-ban chain. I also provide **paid** 
 
 WeChat ID: **future_qyf** (or scan below)
 
+More notes and field records: https://tokendock.online/
+
 <p><img src="assets/qr/wechat-friend.png" alt="WeChat QR" width="300" /></p>
 
 ---

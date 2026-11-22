@@ -124,6 +124,8 @@ sha256sum -c MANIFEST.sha256
 
 微信号：**future_qyf**（也可直接扫下方二维码）
 
+更多实测记录与说明：https://tokendock.online/
+
 <p><img src="assets/qr/wechat-friend.png" alt="微信好友二维码" width="300" /></p>
 
 ---
