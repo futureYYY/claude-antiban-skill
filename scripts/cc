@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# 作者：future ｜ https://github.com/futureYYY/claude-antiban-skill ｜ MIT
+# cc —— 在 tmux 里跑 Claude Code（断线不死）
+# 安装：cp cc /usr/local/bin/ && chmod 755 /usr/local/bin/cc
+# 注意：不要在 tmux 会话内部再执行 cc（会报 sessions should be nested）
+
+if tmux has-session -t claude 2>/dev/null; then
+  exec tmux attach-session -t claude
+fi
+
+if command -v tmux >/dev/null 2>&1; then
+  exec tmux new-session -s claude 'claude-safe; exec bash -l'
+else
+  exec setsid claude-safe
+fi

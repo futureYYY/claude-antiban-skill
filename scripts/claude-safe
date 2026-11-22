@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# 作者：future ｜ https://github.com/futureYYY/claude-antiban-skill ｜ MIT
+# claude-safe —— 干净启动 Claude Code
+# 作用：抹掉 SSH 来源环境变量，挂上 OAuth token，再启动 claude
+# 安装：cp claude-safe /usr/local/bin/ && chmod 755 /usr/local/bin/claude-safe
+
+unset SSH_CONNECTION SSH_CLIENT SSH_TTY 2>/dev/null || true
+
+TOKEN_FILE="${CLAUDE_TOKEN_FILE:-$HOME/.claude/oauth_token}"
+if [ -r "$TOKEN_FILE" ]; then
+  CLAUDE_CODE_OAUTH_TOKEN="$(cat "$TOKEN_FILE")"
+  export CLAUDE_CODE_OAUTH_TOKEN
+fi
+
+CLAUDE_BIN="$(command -v claude 2>/dev/null || true)"
+if [ -z "$CLAUDE_BIN" ]; then
+  for c in /usr/local/bin/claude "$HOME/.local/bin/claude" "$HOME/.local/share/claude/claude"; do
+    [ -x "$c" ] && { CLAUDE_BIN="$c"; break; }
+  done
+fi
+if [ -z "$CLAUDE_BIN" ]; then
+  echo "claude-safe: 找不到 claude 可执行文件。" >&2
+  echo "  先装：curl -fsSL https://claude.ai/install.sh | bash" >&2
+  echo "  再软链：ln -sf \$HOME/.local/bin/claude /usr/local/bin/claude" >&2
+  exit 127
+fi
+
+exec "$CLAUDE_BIN" "$@"
