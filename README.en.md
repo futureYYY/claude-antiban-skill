@@ -47,6 +47,8 @@ claude-antiban-2026/
 
 Give the folder to WorkBuddy / Qoder / Cursor / Codex and say the one-liner above. The agent reads `AGENTS.md` first, then runs Steps 1→17 from `00-START-HERE.md`. You only show up for payments, SMS verification, ID documents, and UAC prompts.
 
+**In practice**: nothing is installed locally — a coding agent such as Qoder sends commands over SSH to the Claude instance running on the server.
+
 **Option 2 — do it yourself**
 
 1. Read `00-START-HERE.md`, follow the steps in order

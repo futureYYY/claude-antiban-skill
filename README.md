@@ -69,6 +69,8 @@ claude-antiban-2026/
 
 agent 会先读 `AGENTS.md`，再按 `00-START-HERE.md` 的 Step 1 → 17 执行；你只在付款、收验证码、出证件的时候出现。
 
+**实际用法**：本机不装 Claude Code，用 Qoder 这类 agent 下发指令，通过 SSH 让服务器上的 Claude 执行任务。
+
 **方式二：自己动手**
 
 1. 读 `00-START-HERE.md`，按 Step 顺序做

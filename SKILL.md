@@ -233,6 +233,8 @@ examples:
 
 ### Phase 8 · 远程用 Claude Code
 
+> **本机不用装 Claude Code。** 实际用法：用 Qoder 这类 coding agent 下发指令，经 SSH 交给服务器上的 Claude 执行；本机只保留编辑器与浏览器。
+
 - **做什么**：服务器 `claude setup-token` 登录（授权链接拿到**指纹浏览器**里打开）→ 装 `claude-safe` / `cc` → 从本机 SSH 过去用
 - **完成判据**：`ssh <alias> "claude-safe -p 'Reply with exactly: OK'"` 返回 `OK`
 - **每次开工前**：TUN 开着 + GLOBAL 选出口节点 + 出口是美国（见 `references/05` 第六节）

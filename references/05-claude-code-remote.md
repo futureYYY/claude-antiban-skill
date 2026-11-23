@@ -1,5 +1,7 @@
 > 作者：future ｜ https://github.com/futureYYY/claude-antiban-skill ｜ MIT
 
+> **本机不装 Claude Code**：用 Qoder 等 agent 下发指令，经 SSH 到服务器上的 Claude 执行；本机只保留编辑器与浏览器。
+
 # 阶段 8：远程用 Claude Code
 
 > 本文不含服务器 IP、SSH 端口、token 内容。示例一律用 `<alias>` / `<VPS_IP>`。
