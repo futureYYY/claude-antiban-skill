@@ -82,6 +82,20 @@ agent 会先读 `AGENTS.md`，再按 `00-START-HERE.md` 的 Step 1 → 17 执行
 
 ---
 
+## 实测记录
+
+截至 2026-11-23，两个账号都还活着：
+
+- 一个 **Pro** 号经历了续期（本周用量 31%，Claude Code 44%）
+- 另一个原本 **Max** 的账号没有续期，现在显示为 **Free**
+
+<p>
+  <img src="assets/proof/pro-usage.png" alt="Pro 账号用量" width="520" />
+  <img src="assets/proof/max-to-free.png" alt="Max 未续期变为 Free" width="400" />
+</p>
+
+> 截图已隐去姓名与组织 ID，日期和套餐状态未做改动。
+
 ## 2026-11 重要更新
 
 官方风控进一步收紧，通过**第三方代充 + iOS 渠道**充值的账号，**订阅不到账**的概率明显上升；即便到账，代充绑的是别人的支付链，一旦拒付或回溯，订阅作废、账号连带封禁。

@@ -60,6 +60,20 @@ Give the folder to WorkBuddy / Qoder / Cursor / Codex and say the one-liner abov
 
 ---
 
+## Field evidence
+
+As of 2026-11-23, both accounts are still alive:
+
+- One **Pro** account went through a renewal (31% of this week's usage; Claude Code 44%)
+- The other account, originally **Max**, was not renewed and now shows as **Free**
+
+<p>
+  <img src="assets/proof/pro-usage.png" alt="Pro account usage" width="520" />
+  <img src="assets/proof/max-to-free.png" alt="Max lapsed to Free" width="400" />
+</p>
+
+> Name and organization ID are blurred; dates and plan status are untouched.
+
 ## Important update (2026-11)
 
 Anthropic tightened risk control. Accounts topped up via **third-party resellers + iOS in-app purchase** now fail to credit noticeably more often; even when it works, the subscription is tied to someone else's payment chain, and a chargeback can kill both the subscription and the account.
