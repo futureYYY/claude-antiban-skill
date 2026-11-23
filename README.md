@@ -90,8 +90,8 @@ agent 会先读 `AGENTS.md`，再按 `00-START-HERE.md` 的 Step 1 → 17 执行
 - 另一个原本 **Max** 的账号没有续期，现在显示为 **Free**
 
 <p>
-  <a href="assets/proof/pro-usage.png" target="_blank"><img src="assets/proof/pro-usage.png" alt="Pro 账号用量" width="520" /></a>
-  <a href="assets/proof/max-to-free.png" target="_blank"><img src="assets/proof/max-to-free.png" alt="Max 未续期变为 Free" width="400" /></a>
+  <a href="assets/proof/pro-usage-v2.png" target="_blank"><img src="assets/proof/pro-usage-v2.png" alt="Pro 账号用量" width="520" /></a>
+  <a href="assets/proof/max-to-free-v2.png" target="_blank"><img src="assets/proof/max-to-free-v2.png" alt="Max 未续期变为 Free" width="400" /></a>
 </p>
 
 > 截图已隐去姓名与组织 ID，日期和套餐状态未做改动。
