@@ -68,8 +68,8 @@ As of 2026-11-23, both accounts are still alive:
 - The other account, originally **Max**, was not renewed and now shows as **Free**
 
 <p>
-  <img src="assets/proof/pro-usage.png" alt="Pro account usage" width="520" />
-  <img src="assets/proof/max-to-free.png" alt="Max lapsed to Free" width="400" />
+  <a href="assets/proof/pro-usage.png" target="_blank"><img src="assets/proof/pro-usage.png" alt="Pro account usage" width="520" /></a>
+  <a href="assets/proof/max-to-free.png" target="_blank"><img src="assets/proof/max-to-free.png" alt="Max lapsed to Free" width="400" /></a>
 </p>
 
 > Name and organization ID are blurred; dates and plan status are untouched.
