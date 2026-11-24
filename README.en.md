@@ -62,6 +62,28 @@ Give the folder to WorkBuddy / Qoder / Cursor / Codex and say the one-liner abov
 
 ---
 
+## Update 2026-11-24
+
+- Multi-account quota rotation: two Pro accounts hand off automatically at 20–30% remaining
+- Threshold re-rolled every check; 30-minute dwell after each switch; wait for reset + 30–60 min when both are tight
+- Resume sends "继续" only to unfinished sessions, sequentially, 5–10 s apart
+- Restarts preserve the original `--model / --effort`
+- See `references/10-quota-switching.md` and `scripts/quota-guard2.sh`
+
+## Subscription log (2026-11-23)
+
+**Around 10 PM on 2026-11-23, the expired Max account was renewed to Pro through Google Play.**
+
+> Ignore the clock in the phone screenshot: the system time zone was switched to match the US.
+
+<p>
+  <a href="assets/proof/renewal-2026-11-23.png" target="_blank"><img src="assets/proof/renewal-2026-11-23.png" alt="Usage page after renewing to Pro via Google Play" width="620" /></a>
+</p>
+
+Screen recording of the whole flow (1 minute, Google Play payment through to Pro activation):
+
+https://github.com/futureYYY/claude-antiban-skill/releases/download/v2026.11.24/immersive-subscribe.mp4
+
 ## Field evidence
 
 As of 2026-11-23, both accounts are still alive:

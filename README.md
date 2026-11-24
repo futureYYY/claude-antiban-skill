@@ -84,6 +84,28 @@ agent 会先读 `AGENTS.md`，再按 `00-START-HERE.md` 的 Step 1 → 17 执行
 
 ---
 
+## 2026-11-24 更新
+
+- 新增 **多账号额度轮换**：两个 Pro 号自动顶班，剩余 20–30% 就切
+- 阈值每次重抽、切换后驻留 30 分钟、双号都满时等重置 + 30–60 分钟
+- 续跑只发「继续」给未完成的会话，串行、间隔 5–10 秒
+- 重启保留原 `--model / --effort`
+- 详见 `references/10-quota-switching.md` 与 `scripts/quota-guard2.sh`
+
+## 订阅实录（2026-11-23）
+
+**2026-11-23 晚上 10 点左右，通过 Google Play 给过期的 Max 账号续订了 Pro。**
+
+> 手机截图上的时间请忽略：系统时区已改为与美国一致。
+
+<p>
+  <a href="assets/proof/renewal-2026-11-23.png" target="_blank"><img src="assets/proof/renewal-2026-11-23.png" alt="Google Play 续订 Pro 后的用量页" width="620" /></a>
+</p>
+
+订阅全程录屏（1 分钟，沉浸式走一遍 Google Play 付款到 Pro 到账）：
+
+https://github.com/futureYYY/claude-antiban-skill/releases/download/v2026.11.24/immersive-subscribe.mp4
+
 ## 实测记录
 
 截至 2026-11-23，两个账号都还活着：

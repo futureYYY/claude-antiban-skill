@@ -276,6 +276,23 @@ examples:
   - 别依赖「不开梯子就断网」：部分 ROM 不真正执行这个设置，实测重启后照样能上网
 - **细节**：[references/09-mobile.md]
 
+## Phase 11 · 多账号额度轮换（可选，约 30 分钟）
+
+**什么时候需要**：一个号跑长任务，5 小时额度总在中途撞限，任务被硬断。
+
+**做什么**：
+
+1. 第二个号单独授权，token 存 `tokens/<name>.env`，**不覆盖 active**
+2. 部署 `scripts/quota-guard2.sh`（多账号 + 多会话统一守护）
+3. 阈值：**剩余 20%–30% 就切**，每次重抽；切换后**驻留 30 分钟**
+4. 两个号都满：等**最近重置**，再等 **30–60 分钟随机**才切
+5. 续跑只给**未完成**的会话发「继续」，**串行**，间隔 5–10 秒随机
+6. 重启会话时保留原 `--model / --effort / --permission-mode`
+
+**为什么这么做**：见 [references/10-quota-switching.md](references/10-quota-switching.md) —— 用响应头读额度、阈值留余量、随机化避开固定节奏、重置后延迟上线。
+
+**判据**：`claude-quota-guard2 --status` 能同时列出两个号的 5h / 7d 利用率与重置时间，且 active 正确。
+
 ## 4. 七条红线
 
 1. 不共享账号、不做反代 —— 一个号卖 N 个人是最快的封号方式
@@ -300,6 +317,8 @@ examples:
 | `scripts/weekly-check.sh` | 本地 | 一周自查合集 |
 | `scripts/ensure-ssh-proxy.sh` | 本地 | 把 `ProxyCommand` 钉进 `~/.ssh/config` 的指定 Host（幂等，自动备份 + `ssh -G` 校验） |
 | `scripts/ssh-guard.sh` | 本地 | 连服务器前的硬闸门：静态 + 端口 + `--live` 实时检查，不通过就退出 |
+
+| `scripts/quota-guard2.sh` | 服务器 | 多账号额度守护：随机间隔、随机阈值、驻留、等重置、保留模型参数 |
 
 ## 6. 给 AI 执行代理的协议
 
@@ -333,10 +352,13 @@ examples:
 | [references/07-agent-protocol.md](references/07-agent-protocol.md) | 执行方划分、卡点四段式模板、五道硬门禁、复验表 |
 | [references/09-mobile.md](references/09-mobile.md) | **手机端**：真机边界、链式复刻、导入五坑、APN 关 IPv6、四项泄漏自检、App 后台封锁 |
 
+| [references/10-quota-switching.md](references/10-quota-switching.md) | **多账号额度轮换**：响应头读额度、20–30% 阈值、重置后等待、续跑与参数保留 |
+
 ## 8. 更新记录
 
 | 版本 | 日期 | 改了什么 |
 |---|---|---|
+| 2026.11.24 | 2026-11-24 | 新增 **Phase 11 多账号额度轮换** 与 `references/10-quota-switching.md`、`scripts/quota-guard2.sh`：响应头读 5h/7d 利用率与重置时间；剩余 20–30% 触发（每次重抽）；切换后驻留 30 分钟；双号都满时等最近重置 + 30–60 分钟随机再切；续跑串行、间隔 5–10 秒；重启保留原 model/effort。 |
 | 2026.11 | 2026-11-22 | **首个开源版（MIT）**：免费发布，可自由使用、修改、分发；支付章节重写为「自备 Visa / Mastercard 走日本区 Google Play（手机操作）」或「买成品号」，并强调手机订阅前先按 `references/09` 对齐出口、通过四项检测再付款；新增 `README.md`、打赏与联系二维码。版本号自此改为「年份.月份」。 |
 | 1.3.1 | 2026-11-19 | 补指纹浏览器时区坑：AdsPower「时区=基于 IP」有按美国东部兜底的情况，实测出现「系统时区 NY / IP 时区 LA」；改为自定义 `America/Los_Angeles` 并强调 -8 区多个同名偏移只有 LA 可用；补「地理位置自定义但经纬度留空 = 无定位」的坑。同步进 `references/03`、`06` 坑表与卡点速查。 |
 | 1.3.0 | 2026-11-17 | 新增 `references/09-mobile.md` 与 Phase 10「手机端」：真机边界（只能一号一机）、用 `dialer-proxy` 复刻链式、导入配置五个坑（先停 VPN / 内网直连 / 域名钉 IP / 同名草稿 / adb 批量推）、APN 关 IPv6 且不碰 IMS、四项泄漏自检、WebRTC 只认 host 候选、断网锁定不可靠、App 后台封锁三条命令。全部为实测结论，不含任何真实地址。 |
