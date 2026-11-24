@@ -21,7 +21,7 @@ WAIT_MAX=3600
 DRY="${DRY_RUN:-0}"
 
 mkdir -p "$DIR"
-log(){ echo "$(TZ=Asia/Shanghai date '+%F %T') $*" >> "$LOG"; [ "$DRY" = "1" ] && echo "$(TZ=Asia/Shanghai date '+%H:%M:%S') $*"; }
+log(){ echo "$(TZ=America/Los_Angeles date '+%F %T') $*" >> "$LOG"; [ "$DRY" = "1" ] && echo "$(TZ=America/Los_Angeles date '+%H:%M:%S') $*"; }
 
 probe(){
   local f="$TOK/$1.env" hdr code u5 u7 r5 r7
@@ -116,7 +116,7 @@ if [ "${1:-}" = "--status" ]; then
   printf '%-18s %-6s %-8s %-8s %s\n' ACCOUNT HTTP 5H 7D RESET_5H
   for a in $(accounts); do
     read -r c u5 u7 r5 r7 <<< "$(probe "$a")"
-    printf '%-18s %-6s %-8s %-8s %s\n' "$a" "$c" "$u5" "$u7" "$(TZ=Asia/Shanghai date -d "@$r5" '+%m-%d %H:%M' 2>/dev/null)"
+    printf '%-18s %-6s %-8s %-8s %s\n' "$a" "$c" "$u5" "$u7" "$(TZ=America/Los_Angeles date -d "@$r5" '+%m-%d %H:%M' 2>/dev/null)"
   done
   echo "active: $(cur_acct)"
   exit 0
@@ -143,7 +143,7 @@ while :; do
       log "wait elapsed -> switch to $w_target"
       switch_to "$w_target" "post-reset-wait"
     else
-      log "waiting for reset: target=$w_target until=$(TZ=Asia/Shanghai date -d @$w_until '+%F %T')"
+      log "waiting for reset: target=$w_target until=$(TZ=America/Los_Angeles date -d @$w_until '+%F %T')"
     fi
     sleep "$interval"; continue
   fi
@@ -172,7 +172,7 @@ while :; do
       if [ "$next" != "0" ] && [ -n "$ntarget" ]; then
         wait_until=$(( next + RANDOM % (WAIT_MAX - WAIT_MIN + 1) + WAIT_MIN ))
         printf '%s %s\n' "$ntarget" "$wait_until" > "$WAITF"
-        log "both tight; target=$ntarget reset=$(TZ=Asia/Shanghai date -d @$next '+%F %T') wait_until=$(TZ=Asia/Shanghai date -d @$wait_until '+%F %T')"
+        log "both tight; target=$ntarget reset=$(TZ=America/Los_Angeles date -d @$next '+%F %T') wait_until=$(TZ=America/Los_Angeles date -d @$wait_until '+%F %T')"
       else
         log "both tight but no future reset found; retry next round"
       fi

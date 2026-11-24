@@ -105,7 +105,23 @@ ps -eo args= -p <claude_pid>
 
 ---
 
-## 7. 完整实现
+## 7. 时区：跟着服务器走，别写 +08:00
+
+服务器在美国，日志就应该是美国时间。把时区写死成某个固定值（尤其是和机器所在地不一致的）有三个坏处：
+
+1. **排查时对不上**：`journalctl`、`ls -l`、nginx 日志全是机器本地时区，只有守护日志是另一个时区，对时间要心算。
+2. **看起来就不像本地流量**：一台美国 IP 的机器，系统里到处是另一个时区的时间，本身就是个不该留下的痕迹。
+3. **夏令时出错**：固定偏移不会跟着 PST/PDT 切换，半年内会有 1 小时误差。
+
+**做法**：systemd 单元里**不要写 `Environment=TZ=`**，让它继承系统时区；脚本里需要格式化时间时用服务器本地时区。
+
+```bash
+timedatectl            # 应该是 America/Los_Angeles（美西）
+# 若不对：
+sudo timedatectl set-timezone America/Los_Angeles
+```
+
+## 7.1 完整实现
 
 脚本：`scripts/quota-guard2.sh`（部署到 `/usr/local/bin/claude-quota-guard2`）
 
@@ -129,7 +145,7 @@ After=network-online.target
 
 [Service]
 Environment=HOME=/root
-Environment=TZ=Asia/Shanghai
+# 不覆盖 TZ：让日志跟随服务器系统时区（美国机器就是 America/Los_Angeles）
 ExecStart=/usr/local/bin/claude-quota-guard2
 Restart=always
 RestartSec=20
