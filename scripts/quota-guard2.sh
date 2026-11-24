@@ -1,8 +1,8 @@
 #!/bin/bash
 # claude-quota-guard2 — 多账号 / 多会话额度守护 (2026-11-24)
 # 规则：
-#   - 检测间隔 720-1200 秒随机
-#   - 剩余 10%-20% 触发（利用率阈值 0.80-0.90，每次重抽）
+#   - 检测间隔与阈值同源：抽 10-20 的整数 X，剩 X% 触发，间隔 X 分钟
+#   - 阈值 = 剩余 X%（利用率 1-X/100），每轮重抽 X
 #   - 切换后最小驻留 30 分钟
 #   - 双号都满：等最近重置 + 30-60 分钟随机，再切
 #   - 续跑：只给未完成会话发「继续」，串行，间隔 5-10 秒随机
@@ -114,11 +114,12 @@ fi
 
 log "guard2 started dry=$DRY dwell=${DWELL}s"
 while :; do
-  interval=$(( RANDOM % 481 + 720 ))          # 720-1200 秒
+  X=$(( RANDOM % 11 + 10 ))                    # 10-20 的整数
+  interval=$(( X * 60 ))                       # 同源：X% 剩余 ↔ X 分钟
   cur="$(cur_acct)"
   read -r code u5 u7 r5 r7 <<< "$(probe "$cur")"
   util="$(mx "$u5" "$u7")"
-  th="$(awk -v r=$(( RANDOM % 11 )) 'BEGIN{printf "%.3f", 0.80 + r/100}')"   # 剩余 10-20%
+  th="$(awk -v x="$X" 'BEGIN{printf "%.3f", 1 - x/100}')"   # 剩 X% 触发
   last="$(cat "$STATE" 2>/dev/null || echo 0)"
   age=$(( $(date +%s) - last ))
 
