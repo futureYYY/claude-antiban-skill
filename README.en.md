@@ -2,7 +2,7 @@
 
 [简体中文](README.md) ｜ English
 
-**Free & open source ｜ Author: future ｜ Version: 2026.11 ｜ License: MIT**
+**Free & open source ｜ Author: future ｜ Version: 2026.11.24 ｜ License: MIT**
 
 A field-tested playbook for keeping Claude accounts alive: picking a genuine US residential IP, building a Clash chain proxy, plugging DNS/IPv6 leaks, configuring the AdsPower fingerprint browser, warming up an account, choosing a payment route, running Claude Code remotely, and self-checking after a ban.
 
