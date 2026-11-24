@@ -64,7 +64,7 @@ Give the folder to WorkBuddy / Qoder / Cursor / Codex and say the one-liner abov
 
 ## Update 2026-11-24
 
-- Multi-account quota rotation: two Pro accounts hand off automatically at 20–30% remaining
+- Multi-account quota rotation: two Pro accounts hand off automatically at 10–20% remaining
 - Threshold re-rolled every check; 30-minute dwell after each switch; wait for reset + 30–60 min when both are tight
 - Resume sends "继续" only to unfinished sessions, sequentially, 5–10 s apart
 - Restarts preserve the original `--model / --effort`

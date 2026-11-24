@@ -352,13 +352,13 @@ examples:
 | [references/07-agent-protocol.md](references/07-agent-protocol.md) | 执行方划分、卡点四段式模板、五道硬门禁、复验表 |
 | [references/09-mobile.md](references/09-mobile.md) | **手机端**：真机边界、链式复刻、导入五坑、APN 关 IPv6、四项泄漏自检、App 后台封锁 |
 
-| [references/10-quota-switching.md](references/10-quota-switching.md) | **多账号额度轮换**：响应头读额度、20–30% 阈值、重置后等待、续跑与参数保留 |
+| [references/10-quota-switching.md](references/10-quota-switching.md) | **多账号额度轮换**：响应头读额度、10–20% 阈值、重置后等待、续跑与参数保留 |
 
 ## 8. 更新记录
 
 | 版本 | 日期 | 改了什么 |
 |---|---|---|
-| 2026.11.24 | 2026-11-24 | 新增 **Phase 11 多账号额度轮换** 与 `references/10-quota-switching.md`、`scripts/quota-guard2.sh`：响应头读 5h/7d 利用率与重置时间；剩余 20–30% 触发（每次重抽）；切换后驻留 30 分钟；双号都满时等最近重置 + 30–60 分钟随机再切；续跑串行、间隔 5–10 秒；重启保留原 model/effort。 |
+| 2026.11.24 | 2026-11-24 | 新增 **Phase 11 多账号额度轮换** 与 `references/10-quota-switching.md`、`scripts/quota-guard2.sh`：响应头读 5h/7d 利用率与重置时间；剩余 10–20% 触发（每次重抽）；切换后驻留 30 分钟；双号都满时等最近重置 + 30–60 分钟随机再切；续跑串行、间隔 5–10 秒；重启保留原 model/effort。 |
 | 2026.11 | 2026-11-22 | **首个开源版（MIT）**：免费发布，可自由使用、修改、分发；支付章节重写为「自备 Visa / Mastercard 走日本区 Google Play（手机操作）」或「买成品号」，并强调手机订阅前先按 `references/09` 对齐出口、通过四项检测再付款；新增 `README.md`、打赏与联系二维码。版本号自此改为「年份.月份」。 |
 | 1.3.1 | 2026-11-19 | 补指纹浏览器时区坑：AdsPower「时区=基于 IP」有按美国东部兜底的情况，实测出现「系统时区 NY / IP 时区 LA」；改为自定义 `America/Los_Angeles` 并强调 -8 区多个同名偏移只有 LA 可用；补「地理位置自定义但经纬度留空 = 无定位」的坑。同步进 `references/03`、`06` 坑表与卡点速查。 |
 | 1.3.0 | 2026-11-17 | 新增 `references/09-mobile.md` 与 Phase 10「手机端」：真机边界（只能一号一机）、用 `dialer-proxy` 复刻链式、导入配置五个坑（先停 VPN / 内网直连 / 域名钉 IP / 同名草稿 / adb 批量推）、APN 关 IPv6 且不碰 IMS、四项泄漏自检、WebRTC 只认 host 候选、断网锁定不可靠、App 后台封锁三条命令。全部为实测结论，不含任何真实地址。 |
