@@ -1,12 +1,12 @@
 #!/bin/bash
-# claude-quota-guard2 — 多账号 / 多会话额度守护 (2026-11-24)
+# claude-quota-guard2 — 多账号 / 多会话额度守护 (2026-11-24, rev2)
 # 规则：
-#   - 检测间隔与阈值同源：抽 10-20 的整数 X，剩 X% 触发，间隔 X 分钟
-#   - 阈值 = 剩余 X%（利用率 1-X/100），每轮重抽 X
+#   - 每轮抽 X = 10-20：剩 X% 触发，间隔 X 分钟（同源）
 #   - 切换后最小驻留 30 分钟
-#   - 双号都满：等最近重置 + 30-60 分钟随机，再切
+#   - 双号都满：等最近重置 + 30-60 分钟随机，再切（等待状态持久化）
 #   - 续跑：只给未完成会话发「继续」，串行，间隔 5-10 秒随机
 #   - 重启会话保留原 --model / --effort / --permission-mode
+#   - 只重启正在跑 claude 的会话，纯 shell 会话跳过
 set -uo pipefail
 
 TOK=/root/.claude/tokens
@@ -14,9 +14,10 @@ DIR=/root/.claude/failover
 ACTIVE="$TOK/active"
 LOG="$DIR/guard2.log"
 STATE="$DIR/guard2.state"
-DWELL=1800              # 最小驻留 30 分钟
-WAIT_MIN=1800           # 重置后再等 30 分钟
-WAIT_MAX=3600           # 上限 60 分钟
+WAITF="$DIR/guard2.wait"
+DWELL=1800
+WAIT_MIN=1800
+WAIT_MAX=3600
 DRY="${DRY_RUN:-0}"
 
 mkdir -p "$DIR"
@@ -42,7 +43,6 @@ probe(){
 mx(){ awk -v a="$1" -v b="$2" 'BEGIN{printf "%.4f", (a>b?a:b)}'; }
 ge(){ awk -v u="$1" -v t="$2" 'BEGIN{exit !(u>=t)}'; }
 lt(){ awk -v u="$1" -v t="$2" 'BEGIN{exit !(u<t)}'; }
-
 accounts(){ for f in "$TOK"/*.env; do [ -r "$f" ] && basename "$f" .env; done; }
 cur_acct(){ [ -L "$ACTIVE" ] && basename "$(readlink -f "$ACTIVE")" .env; }
 sessions(){ tmux ls -F '#{session_name}' 2>/dev/null; }
@@ -50,42 +50,51 @@ sessions(){ tmux ls -F '#{session_name}' 2>/dev/null; }
 pane_busy(){ tmux capture-pane -p -t "$1" 2>/dev/null | tail -8 | grep -q "esc to interrupt"; }
 pane_has_limit(){ tmux capture-pane -p -t "$1" -S -40 2>/dev/null | grep -v 'Context limit' | grep -qiE 'usage limit reached|limit reached|rate_limit_error|API Error: 429'; }
 
-# 取会话当前 claude 进程参数
-pane_args(){
-  local s="$1" pid cwd p
-  pid="$(tmux list-panes -t "$s" -F '#{pane_pid}' 2>/dev/null | head -1)"
-  [ -z "$pid" ] && { echo ""; return; }
-  for p in $(pgrep -P "$pid" 2>/dev/null) $(pgrep -f 'bin/claude' 2>/dev/null); do
-    [ -r "/proc/$p/cwd" ] || continue
-    cwd="$(readlink -f "/proc/$p/cmdline" )"
-    if tr '\0' ' ' < "/proc/$p/cmdline" 2>/dev/null | grep -q 'claude'; then
-      tr '\0' ' ' < "/proc/$p/cmdline" | sed -e 's/^[^ ]* //' -e 's/[[:space:]]*$//'
-      return
-    fi
+# 只取该 pane 的后代进程，避免抓到别的会话
+descendants(){
+  local root="$1" out="" cur c
+  local queue=("$root")
+  while [ ${#queue[@]} -gt 0 ]; do
+    cur="${queue[0]}"; queue=("${queue[@]:1}")
+    for c in $(pgrep -P "$cur" 2>/dev/null); do out="$out $c"; queue+=("$c"); done
   done
-  echo ""
+  printf '%s' "$out"
+}
+
+pane_claude_args(){
+  local s="$1" pid p cmd
+  pid="$(tmux list-panes -t "$s" -F '#{pane_pid}' 2>/dev/null | head -1)"
+  [ -z "$pid" ] && return
+  for p in $(descendants "$pid"); do
+    cmd="$(tr '\0' ' ' < "/proc/$p/cmdline" 2>/dev/null)"
+    case "$cmd" in
+      *"/claude "|*"/claude"|claude\ *) printf '%s' "$cmd"; return ;;
+    esac
+  done
 }
 
 norm_args(){
-  local raw="$1" out="-c"
-  echo "$raw" | grep -q -- '--model' && out="$out $(echo "$raw" | grep -oE -- '--model[= ][^ ]+' | head -1 | sed 's/--model[= ]/--model /')" || out="$out --model opus"
-  echo "$raw" | grep -q -- '--effort' && out="$out $(echo "$raw" | grep -oE -- '--effort[= ][^ ]+' | head -1 | sed 's/--effort[= ]/--effort /')" || out="$out --effort max"
-  echo "$raw" | grep -q -- '--permission-mode' && out="$out $(echo "$raw" | grep -oE -- '--permission-mode[= ][^ ]+' | head -1 | sed 's/--permission-mode[= ]/--permission-mode /')"
-  echo "$out"
+  local raw=" $1 " m e pm out="-c"
+  m="$(printf '%s' "$raw" | grep -oE -- '--model[ =][^ ]+' | head -1 | sed -E 's/--model[ =]//')"
+  e="$(printf '%s' "$raw" | grep -oE -- '--effort[ =][^ ]+' | head -1 | sed -E 's/--effort[ =]//')"
+  pm="$(printf '%s' "$raw" | grep -oE -- '--permission-mode[ =][^ ]+' | head -1 | sed -E 's/--permission-mode[ =]//')"
+  out="$out --model ${m:-opus} --effort ${e:-max}"
+  [ -n "$pm" ] && out="$out --permission-mode $pm"
+  printf '%s' "$out"
 }
 
 switch_to(){
-  local target="$1" reason="$2"
-  local cur; cur="$(cur_acct)"
+  local target="$1" reason="$2" cur; cur="$(cur_acct)"
   log "SWITCH $cur -> $target ($reason)"
-  [ "$DRY" = "1" ] && { log "[dry] would link active -> $target"; return 0; }
+  if [ "$DRY" = "1" ]; then log "[dry] would relink active -> $target"; return 0; fi
 
-  ln -sfn "$TOK/$target.env" "$ACTIVE"
+  ln -sfn "$TOK/$target.env" "$ACTIVE" || { log "relink failed"; return 1; }
   local s cwd raw args busy
   for s in $(sessions); do
+    raw="$(pane_claude_args "$s")"
+    if [ -z "$raw" ]; then log "  skip $s (no claude process)"; continue; fi
     busy=0; pane_busy "$s" && busy=1
     cwd="$(tmux display-message -p -t "$s" '#{pane_current_path}' 2>/dev/null)"
-    raw="$(pane_args "$s")"
     args="$(norm_args "$raw")"
     tmux kill-session -t "$s" 2>/dev/null
     sleep 3
@@ -96,9 +105,10 @@ switch_to(){
       tmux send-keys -t "$s" -l "继续"; sleep 1; tmux send-keys -t "$s" Enter
       log "  sent 继续 -> $s"
     fi
-    sleep $(( RANDOM % 6 + 5 ))   # 5-10 秒随机
+    sleep $(( RANDOM % 6 + 5 ))
   done
-  echo "$(date +%s)" > "$STATE"
+  date +%s > "$STATE"
+  rm -f "$WAITF"
   log "switch done"
 }
 
@@ -112,18 +122,31 @@ if [ "${1:-}" = "--status" ]; then
   exit 0
 fi
 
-log "guard2 started dry=$DRY dwell=${DWELL}s"
+log "guard2 rev2 started dry=$DRY dwell=${DWELL}s"
 while :; do
-  X=$(( RANDOM % 11 + 10 ))                    # 10-20 的整数
-  interval=$(( X * 60 ))                       # 同源：X% 剩余 ↔ X 分钟
+  X=$(( RANDOM % 11 + 10 ))
+  interval=$(( X * 60 ))
   cur="$(cur_acct)"
   read -r code u5 u7 r5 r7 <<< "$(probe "$cur")"
   util="$(mx "$u5" "$u7")"
-  th="$(awk -v x="$X" 'BEGIN{printf "%.3f", 1 - x/100}')"   # 剩 X% 触发
+  th="$(awk -v x="$X" 'BEGIN{printf "%.3f", 1 - x/100}')"
   last="$(cat "$STATE" 2>/dev/null || echo 0)"
   age=$(( $(date +%s) - last ))
 
   log "check cur=$cur http=$code 5h=$u5 7d=$u7 util=$util th=$th dwell_left=$(( DWELL - age > 0 ? DWELL - age : 0 ))s next=${interval}s"
+
+  # 等待重置阶段：优先处理
+  if [ -f "$WAITF" ]; then
+    read -r w_target w_until <<< "$(cat "$WAITF")"
+    now=$(date +%s)
+    if [ "$now" -ge "${w_until:-0}" ]; then
+      log "wait elapsed -> switch to $w_target"
+      switch_to "$w_target" "post-reset-wait"
+    else
+      log "waiting for reset: target=$w_target until=$(TZ=Asia/Shanghai date -d @$w_until '+%F %T')"
+    fi
+    sleep "$interval"; continue
+  fi
 
   if [ "$code" = "200" ] && ge "$util" "$th" && [ "$age" -ge "$DWELL" ]; then
     best=""; bestu=9
@@ -131,30 +154,27 @@ while :; do
       [ "$a" = "$cur" ] && continue
       read -r cc c5 c7 cr5 cr7 <<< "$(probe "$a")"
       cu="$(mx "$c5" "$c7")"
-      [ "$cc" = "200" ] && lt "$cu" 0.5 && lt "$cu" "$bestu" && { bestu="$cu"; best="$a"; }
+      if [ "$cc" = "200" ] && lt "$cu" 0.5 && lt "$cu" "$bestu"; then bestu="$cu"; best="$a"; fi
     done
     if [ -n "$best" ]; then
       switch_to "$best" "util=$util>=th=$th"
     else
-      # 双号都紧张：找最近重置
-      next=0
+      next=0; ntarget=""
       for a in $(accounts); do
         read -r cc c5 c7 cr5 cr7 <<< "$(probe "$a")"
         cu="$(mx "$c5" "$c7")"
         ge "$cu" "$th" || continue
         for t in "$cr5" "$cr7"; do
-          [ "$t" -gt "$(date +%s)" ] 2>/dev/null || continue
-          if [ "$next" = "0" ] || [ "$t" -lt "$next" ]; then next="$t"; fi
+          [ "${t:-0}" -gt "$(date +%s)" ] 2>/dev/null || continue
+          if [ "$next" = "0" ] || [ "$t" -lt "$next" ]; then next="$t"; ntarget="$a"; fi
         done
       done
-      if [ "$next" != "0" ]; then
+      if [ "$next" != "0" ] && [ -n "$ntarget" ]; then
         wait_until=$(( next + RANDOM % (WAIT_MAX - WAIT_MIN + 1) + WAIT_MIN ))
-        log "both tight; next reset=$(TZ=Asia/Shanghai date -d @$next '+%F %T') wait_until=$(TZ=Asia/Shanghai date -d @$wait_until '+%F %T')"
-        if [ "$(date +%s)" -ge "$wait_until" ]; then
-          switch_to "$cur" "post-reset-wait"   # 目标即当前号（已刷新）
-        fi
+        printf '%s %s\n' "$ntarget" "$wait_until" > "$WAITF"
+        log "both tight; target=$ntarget reset=$(TZ=Asia/Shanghai date -d @$next '+%F %T') wait_until=$(TZ=Asia/Shanghai date -d @$wait_until '+%F %T')"
       else
-        log "no reset info yet; skip"
+        log "both tight but no future reset found; retry next round"
       fi
     fi
   fi
