@@ -10,6 +10,11 @@ A field-tested playbook for keeping Claude accounts alive: picking a genuine US 
 
 ---
 
+## Download
+
+- **Latest (always points to the newest build)**: https://github.com/futureYYY/claude-antiban-skill/releases/latest/download/claude-antiban-skill-latest.zip
+- All versions: https://github.com/futureYYY/claude-antiban-skill/releases
+
 ## One line for your AI agent (copy this)
 
 > Using https://github.com/futureYYY/claude-antiban-skill, set up a stable Claude environment from scratch and walk me through it step by step.

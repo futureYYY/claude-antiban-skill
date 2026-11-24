@@ -8,6 +8,11 @@
 
 ---
 
+## 下载
+
+- **最新版（推荐，永远指向最新）**：https://github.com/futureYYY/claude-antiban-skill/releases/latest/download/claude-antiban-skill-latest.zip
+- 历史版本：https://github.com/futureYYY/claude-antiban-skill/releases
+
 ## 给 AI agent 的一句话（直接复制）
 
 > 从 github 上安装此 skill：https://github.com/futureYYY/claude-antiban-skill ，把 Claude 稳定使用的环境从零搭起来，一步步带我走。
