@@ -2,7 +2,7 @@
 
 [简体中文](README.md) ｜ English
 
-**Free & open source ｜ Author: future ｜ Version: 2026.11.24 ｜ License: MIT**
+**Free & open source ｜ Author: future ｜ Version: 2026.11.26 ｜ License: MIT**
 
 A field-tested playbook for keeping Claude accounts alive: picking a genuine US residential IP, building a Clash chain proxy, plugging DNS/IPv6 leaks, configuring the AdsPower fingerprint browser, warming up an account, choosing a payment route, running Claude Code remotely, and self-checking after a ban.
 
@@ -70,7 +70,10 @@ Give the folder to WorkBuddy / Qoder / Cursor / Codex and say the one-liner abov
 ## Update 2026-11-24
 
 - Multi-account quota rotation: two Pro accounts hand off automatically at 10–20% remaining
-- Each round draws X=10–20: switch at X% remaining and probe every X minutes; 30-minute dwell; wait for reset + 30–60 min when both are tight
+- **Weekly floor 13%**: an account with <=13% weekly quota left is unusable regardless of 5h; floor persisted
+- 5h only selects which account to use (X=10–20 random)
+- Floor hit switches immediately (dwell bypassed); waiting compares weekly reset +30–60 min against the other account's 5h reset +10–30 min
+- New `scripts/quota-guard2-selftest.sh` (11 assertions)
 - Resume sends "继续" only to unfinished sessions, sequentially, 5–10 s apart
 - Restarts preserve the original `--model / --effort`
 - See `references/10-quota-switching.md` and `scripts/quota-guard2.sh`
@@ -87,7 +90,7 @@ Give the folder to WorkBuddy / Qoder / Cursor / Codex and say the one-liner abov
 
 Screen recording of the whole flow (1 minute, Google Play payment through to Pro activation):
 
-https://github.com/futureYYY/claude-antiban-skill/releases/download/v2026.11.24/immersive-subscribe.mp4
+https://github.com/futureYYY/claude-antiban-skill/releases/latest/download/immersive-subscribe.mp4
 
 ## Field evidence
 

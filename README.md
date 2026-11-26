@@ -2,6 +2,8 @@
 
 简体中文 ｜ [English](README.en.md)
 
+> 版本：2026.11.26 ｜ 许可：MIT ｜ 作者：future
+
 一套实测跑通的 Claude 账号防封全链路手册：从挑选美国住宅 IP、搭 Clash 链式代理、堵 DNS / IPv6 泄漏、配置 AdsPower 指纹环境，到注册养号、订阅支付、Claude Code 远程使用，以及被封之后的自查顺序。
 
 > 它记录的是「一套方法」，**不是「保证不被封」的承诺**。账号是否被封取决于执行是否到位、账号来源、IP / 支付 / KYC 是否同源，以及平台策略。
@@ -92,10 +94,13 @@ agent 会先读 `AGENTS.md`，再按 `00-START-HERE.md` 的 Step 1 → 17 执行
 ## 2026-11-24 更新
 
 - 新增 **多账号额度轮换**：两个 Pro 号自动顶班，剩 X%（10–20）就切、X 分钟一检
-- 每轮抽 X=10–20：剩 X% 就切、X 分钟检查一次；切换后驻留 30 分钟；双号都满时等重置 + 30–60 分钟
+- **周额度地板 13%**：周剩余 ≤13% 停用该号，5h 再空也不用；地板落盘不重抽
+- 5h 只做选号依据：每轮抽 X=10–20，剩 X% 时换到 5h 更宽的号
+- 命中地板立即切、不受 30 分钟驻留限制；等待比「周重置+30~60 分」与「5h 重置+10~30 分」取更早
+- 新增 `scripts/quota-guard2-selftest.sh`（11 项断言）
 - 续跑只发「继续」给未完成的会话，串行、间隔 5–10 秒
 - 重启保留原 `--model / --effort`
-- 详见 `references/10-quota-switching.md` 与 `scripts/quota-guard2.sh`
+- 详见 `references/10-quota-switching.md`、`scripts/quota-guard2.sh` 与 `scripts/quota-guard2-selftest.sh`
 
 ## 订阅实录（2026-11-23）
 
@@ -109,7 +114,7 @@ agent 会先读 `AGENTS.md`，再按 `00-START-HERE.md` 的 Step 1 → 17 执行
 
 订阅全程录屏（1 分钟，沉浸式走一遍 Google Play 付款到 Pro 到账）：
 
-https://github.com/futureYYY/claude-antiban-skill/releases/download/v2026.11.24/immersive-subscribe.mp4
+https://github.com/futureYYY/claude-antiban-skill/releases/latest/download/immersive-subscribe.mp4
 
 ## 实测记录
 
