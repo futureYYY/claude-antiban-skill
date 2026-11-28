@@ -2,7 +2,7 @@
 
 [简体中文](README.md) ｜ English
 
-**Free & open source ｜ Author: future ｜ Version: 2026.11.26 ｜ License: MIT**
+**Free & open source ｜ Author: future ｜ Version: 2026.11.28 ｜ License: MIT**
 
 A field-tested playbook for keeping Claude accounts alive: picking a genuine US residential IP, building a Clash chain proxy, plugging DNS/IPv6 leaks, configuring the AdsPower fingerprint browser, warming up an account, choosing a payment route, running Claude Code remotely, and self-checking after a ban.
 
@@ -94,10 +94,25 @@ https://github.com/futureYYY/claude-antiban-skill/releases/latest/download/immer
 
 ## Field evidence
 
-As of 2026-11-23, both accounts are still alive:
+As of 2026-11-28, both accounts are healthy — neither was banned:
 
-- One **Pro** account went through a renewal (31% of this week's usage; Claude Code 44%)
-- The other account, originally **Max**, was not renewed and now shows as **Free**
+- **One Pro was upgraded to Max**; usage reset to 0%
+- **The other Pro is still in use**, weekly quota at **99%**, account fine
+- Neither the desktop nor the server path triggered enforcement
+
+<p>
+  <a href="assets/proof/max-upgraded.png" target="_blank"><img src="assets/proof/max-upgraded.png" alt="Usage after upgrading to Max" width="520" /></a>
+  <a href="assets/proof/pro-week-99.png" target="_blank"><img src="assets/proof/pro-week-99.png" alt="The other Pro at 99% weekly" width="520" /></a>
+</p>
+
+Upgrade screen recording (audio removed, video untouched): release asset `upgrade-to-max-silent.mp4`.
+
+<details><summary>Earlier record (2026-11-23)</summary>
+
+- One **Pro** account went through a renewal (31% weekly; Claude Code 44%)
+- The other account, originally **Max**, was not renewed and showed as **Free**
+
+</details>
 
 <p>
   <a href="assets/proof/pro-usage-v4.png" target="_blank"><img src="assets/proof/pro-usage-v4.png" alt="Pro account usage" width="520" /></a>

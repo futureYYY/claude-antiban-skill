@@ -2,7 +2,7 @@
 
 简体中文 ｜ [English](README.en.md)
 
-> 版本：2026.11.26 ｜ 许可：MIT ｜ 作者：future
+> 版本：2026.11.28 ｜ 许可：MIT ｜ 作者：future
 
 一套实测跑通的 Claude 账号防封全链路手册：从挑选美国住宅 IP、搭 Clash 链式代理、堵 DNS / IPv6 泄漏、配置 AdsPower 指纹环境，到注册养号、订阅支付、Claude Code 远程使用，以及被封之后的自查顺序。
 
@@ -118,10 +118,25 @@ https://github.com/futureYYY/claude-antiban-skill/releases/latest/download/immer
 
 ## 实测记录
 
-截至 2026-11-23，两个账号都还活着：
+截至 2026-11-28，两个号都正常，没有一个被封：
+
+- **一个 Pro 已升级到 Max**，升级后额度归零（周 0%）
+- **另一个 Pro 正常使用**，周额度已用 **99%**，账号仍然正常
+- 两条链路（pc 端 / 服务器端）都没有触发风控
+
+<p>
+  <a href="assets/proof/max-upgraded.png" target="_blank"><img src="assets/proof/max-upgraded.png" alt="升级到 Max 后的用量页" width="520" /></a>
+  <a href="assets/proof/pro-week-99.png" target="_blank"><img src="assets/proof/pro-week-99.png" alt="另一个 Pro 周额度 99%" width="520" /></a>
+</p>
+
+升级过程录屏（已静音，画面未剪）：随 Release 资产 `upgrade-to-max-silent.mp4` 提供。
+
+<details><summary>更早的记录（2026-11-23）</summary>
 
 - 一个 **Pro** 号经历了续期（本周用量 31%，Claude Code 44%）
-- 另一个原本 **Max** 的账号没有续期，现在显示为 **Free**
+- 另一个原本 **Max** 的账号没有续期，显示为 **Free**
+
+</details>
 
 <p>
   <a href="assets/proof/pro-usage-v4.png" target="_blank"><img src="assets/proof/pro-usage-v4.png" alt="Pro 账号用量" width="520" /></a>

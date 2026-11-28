@@ -1,9 +1,9 @@
 ---
 name: claude-antiban-2026
-version: 2026.11.26
+version: 2026.11.28
 display_name: Claude 防封 skill
 display_name_en: Claude Anti-Ban Skill
-description: 免费开源的 Claude 账号防封全链路实操手册（作者 future，2026.11.26 版）。从挑选美国住宅 IP、搭 Clash 链式代理、堵 DNS/IPv6 泄漏、配置 AdsPower 指纹环境，到注册养号、订阅与支付渠道选择、Claude Code 远程使用、封号自查，共 9 篇专题 + 13 个可直接运行的脚本。当用户问 Claude 防封、账号被封、住宅 IP 识别、链式代理、指纹浏览器、Claude Code 远程使用时使用。
+description: 免费开源的 Claude 账号防封全链路实操手册（作者 future，2026.11.28 版）。从挑选美国住宅 IP、搭 Clash 链式代理、堵 DNS/IPv6 泄漏、配置 AdsPower 指纹环境，到注册养号、订阅与支付渠道选择、Claude Code 远程使用、封号自查，共 9 篇专题 + 13 个可直接运行的脚本。当用户问 Claude 防封、账号被封、住宅 IP 识别、链式代理、指纹浏览器、Claude Code 远程使用时使用。
 description_zh: 免费开源。2026 年 11 月版 Claude 防封全链路手册：住宅 IP 识别与验收、Clash 链式代理、DNS/IPv6 泄漏排查、AdsPower 指纹环境、注册与养号节奏、订阅支付渠道现状（自备跨境卡走 Google Play，或成品号）、Claude Code 远程部署、封号自查清单。附 9 篇专题与 13 个脚本。
 description_en: A free, open-source field guide to keeping Claude accounts alive, updated Nov 2026. Covers US residential IP validation, a Clash chain proxy, DNS/IPv6 leak checks, AdsPower fingerprint setup, an account warming schedule, current payment options, remote Claude Code over SSH, and a ban self-check list. 9 deep-dive chapters and 13 runnable scripts.
 examples:
@@ -16,7 +16,7 @@ examples:
 
 > 作者：future ｜ https://github.com/futureYYY/claude-antiban-skill ｜ MIT
 
-# Claude 防封全链路（2026.11 开源版 · 更新至 2026.11.26）
+# Claude 防封全链路（2026.11 开源版 · 更新至 2026.11.28）
 
 > ## 阅读前须知
 >
@@ -365,6 +365,7 @@ examples:
 
 | 版本 | 日期 | 改了什么 |
 |---|---|---|
+| 2026.11.28 | 2026-11-28 | 补两条实测：一个 Pro 升级到 Max（额度归零），另一个 Pro 周额度用到 99% 仍未封；附升级录屏（静音、画面未剪）。 |
 | 2026.11.26 | 2026-11-26 | 额度守护改为**两层判定**：新增周额度地板（≤13% 停用，落盘不重抽，`WEEK_FLOOR_PCT` 可调）；5h 仅作选号依据；命中地板/死号立即切、不受驻留限制；等待改为比「周重置+30~60min」与「5h 重置+10~30min」取更早；补 `scripts/quota-guard2-selftest.sh`（11 项自检）；文档补 CloudCLI 边界与四个 bug 复盘。 |
 | 2026.11.24 | 2026-11-24 | 新增 **Phase 11 多账号额度轮换** 与 `references/10-quota-switching.md`、`scripts/quota-guard2.sh`：响应头读 5h/7d 利用率与重置时间；剩余 10–20% 触发（每次重抽）；切换后驻留 30 分钟；双号都满时等最近重置 + 30–60 分钟随机再切；续跑串行、间隔 5–10 秒；重启保留原 model/effort。 |
 | 2026.11 | 2026-11-22 | **首个开源版（MIT）**：免费发布，可自由使用、修改、分发；支付章节重写为「自备 Visa / Mastercard 走日本区 Google Play（手机操作）」或「买成品号」，并强调手机订阅前先按 `references/09` 对齐出口、通过四项检测再付款；新增 `README.md`、打赏与联系二维码。版本号自此改为「年份.月份」。 |
